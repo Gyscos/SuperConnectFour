@@ -29,7 +29,19 @@
             android:layout_marginBottom="15dp"
             android:layout_marginLeft="0dp"
             android:text="@string/new_game" />
-
+        
+        <TextView
+            android:id="@+id/placeHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:drawablePadding="15dp"
+            android:drawableRight="@drawable/blue_disc"
+            android:gravity="center_vertical"
+            android:text="@string/victory"
+            android:visibility="invisible"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="italic" />
+        
         <TextView
             android:id="@+id/infoBox"
             android:layout_width="wrap_content"

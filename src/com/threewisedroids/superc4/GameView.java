@@ -72,13 +72,6 @@ public class GameView extends BetterSurfaceView {
 
         int gridSize = state.getGridSize();
 
-        if (selecting && state.isInRange(selectedCell.x, selectedCell.y)) {
-            paint.setColor(Color.rgb(200, 200, 200));
-            c.drawRect(getXLine(selectedCell.x), gridRect.top,
-                    getXLine(selectedCell.x + 1), gridRect.bottom, paint);
-            c.drawRect(gridRect.left, getYLine(selectedCell.y), gridRect.right,
-                    getYLine(selectedCell.y + 1), paint);
-        }
         paint.setColor(Color.BLACK);
 
         for (int i = 0; i <= gridSize; i++) {
@@ -91,13 +84,32 @@ public class GameView extends BetterSurfaceView {
         }
     }
 
+    void drawSelected(Canvas c) {
+        if (selecting && state.isInRange(selectedCell.x, selectedCell.y)) {
+            paint.setColor(Color.rgb(200, 200, 200));
+            c.drawRect(getXLine(selectedCell.x), gridRect.top,
+                    getXLine(selectedCell.x + 1), gridRect.bottom, paint);
+            c.drawRect(gridRect.left, getYLine(selectedCell.y), gridRect.right,
+                    getYLine(selectedCell.y + 1), paint);
+
+            paint.setColor(Color.rgb(150, 150, 150));
+            c.drawRect(getXLine(selectedCell.x),
+                    getYLine(selectedCell.y),
+                    getXLine(selectedCell.x + 1),
+                    getYLine(selectedCell.y + 1), paint);
+        }
+    }
+
     void drawWinningCells(Canvas c) {
         if (!state.hasVictory())
             return;
 
         List<Point> winningCells = state.getWinningCells();
 
-        paint.setColor(Color.rgb(255, 230, 230));
+        if (state.getNextPlayer() == 1)
+            paint.setColor(Color.rgb(255, 180, 180));
+        else
+            paint.setColor(Color.rgb(180, 180, 255));
         for (Point p : winningCells) {
             c.drawRect(getXLine(p.x), getYLine(p.y), getXLine(p.x + 1),
                     getYLine(p.y + 1), paint);
@@ -121,6 +133,7 @@ public class GameView extends BetterSurfaceView {
         paint.setColor(Color.rgb(255, 255, 255));
         c.drawRect(gridRect, paint);
 
+        drawSelected(c);
         drawWinningCells(c);
         drawGrid(c);
         drawDiscs(c);
