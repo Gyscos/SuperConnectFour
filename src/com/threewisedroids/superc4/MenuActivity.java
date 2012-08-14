@@ -2,6 +2,7 @@ package com.threewisedroids.superc4;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -10,8 +11,10 @@ import android.widget.ToggleButton;
 
 public class MenuActivity extends Activity {
 
+    Dialog dialog;
+
     public Dialog makeNewGameDialog() {
-        final Dialog dialog = new Dialog(this);
+        dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_new_game);
         dialog.setTitle(R.string.new_game);
 
@@ -39,6 +42,14 @@ public class MenuActivity extends Activity {
 
     public void newGame(boolean useAi, boolean useSize10, boolean fillCorner) {
         // Starts a new activity...
+        Intent intent = new Intent(this, GameActivity.class);
+
+        intent.putExtra("useAI", useAi);
+        intent.putExtra("gridSize", useSize10 ? 10 : 8);
+        intent.putExtra("fillCorners", fillCorner);
+
+        startActivity(intent);
+        dialog.dismiss();
     }
 
     @Override
