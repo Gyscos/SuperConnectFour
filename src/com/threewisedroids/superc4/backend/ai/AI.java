@@ -9,7 +9,17 @@ import com.threewisedroids.superc4.backend.GameState;
 
 public class AI
 {
-    boolean running;
+    boolean                      running;
+
+    int                          maxDepth;
+    int                          maxWidth;
+
+    private static final boolean debug = false;
+
+    public AI(int maxDepth, int maxWidth) {
+        this.maxDepth = maxDepth;
+        this.maxWidth = maxWidth;
+    }
 
     List<Integer> evaluateMoves(GameState state, List<Point> moves) {
         ArrayList<Integer> result = new ArrayList<Integer>();
@@ -19,7 +29,7 @@ public class AI
     }
 
     int findMin(int[] list) {
-        int min = 0;
+        int min = list[0];
         int minId = 0;
         for (int i = 0; i < list.length; i++)
             if (list[i] < min) {
@@ -84,6 +94,7 @@ public class AI
 
     public int play(GameState state) {
         running = true;
+        System.out.println("===== START =====");
         return play(state, 0);
     }
 
@@ -92,7 +103,7 @@ public class AI
             return 0;
 
         // Check for termination
-        if (depth > 2)
+        if (depth > maxDepth)
             return 0;
 
         if (state.hasVictory())
@@ -104,24 +115,58 @@ public class AI
         // Evaluate them
         List<Integer> values = evaluateMoves(state, moves);
 
+        if (depth == 0) {
+            for (int i = 0; i < values.size(); i++)
+                System.out.println("[" + moves.get(i).x + ":" + moves.get(i).y
+                        + "] : " + values.get(i));
+        }
+
         // Sample the K best
-        int[] bests = getBest(values, 6);
+        int width = maxWidth - depth * 2;
+        int[] bests = getBest(values, width);
+
+        if (debug) {
+            for (int id : bests)
+                System.out.print("[" + moves.get(id).x + ":" + moves.get(id).y
+                        + "] ; ");
+            System.out.println();
+        }
 
         // Recurse
         int bestScore = 0;
-        int bestId = 0;
+        int bestId = -1;
         for (int id : bests) {
             Point move = moves.get(id);
 
             GameState next = state.clone();
+
+            if (debug)
+                if (depth != maxDepth) {
+                    System.out.print("(" + depth + ")");
+                    for (int i = 0; i < depth; i++)
+                        System.out.print("  ");
+                    System.out.print("[" + move.x + ":" + move.y + "] --> ");
+                }
+
             next.play(move.x, move.y);
 
-            int score = values.get(id) - play(next, depth + 1);
+            int nextScore = play(next, depth + 1);
+            int score = values.get(id) - nextScore;
+
+            System.out.print("(" + depth + ")");
+            if (debug) {
+                for (int i = 0; i < depth; i++)
+                    System.out.print("  ");
+                System.out
+                        .println("[" + move.x + ":" + move.y + "] : "
+                                + values.get(id) + " - " + nextScore + " = "
+                                + score);
+            }
 
             if (!running)
                 return 0;
 
-            if (score > bestScore) {
+            if (score > bestScore || bestId == -1) {
                 bestScore = score;
                 bestId = id;
             }

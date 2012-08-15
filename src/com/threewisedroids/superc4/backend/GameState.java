@@ -118,7 +118,6 @@ public class GameState {
             int countA = countLine(x, y, direction);
             int countB = countLine(x, y, direction + 1);
 
-            System.out.println("CountA : " + countA + " ; CountB : " + countB);
             if (countA + countB > 4) {
                 victorious = true;
 

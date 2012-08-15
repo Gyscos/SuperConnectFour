@@ -10,7 +10,6 @@
     <string name="size_8x8">8x8</string>
     <string name="size_10x10">10x10</string>
     <string name="fill_corner_cell">Fill corner cells</string>
-    <string name="title_activity_game">Game</string>
     <string name="back">Back</string>
     <string name="rules">Rules</string>
     <string name="undo">Undo</string>

@@ -20,7 +20,7 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_game);
-        // getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
         final int gridSize = getIntent().getIntExtra("gridSize", 8);
         useAI = getIntent().getBooleanExtra("useAI", true);

@@ -208,7 +208,7 @@ public class GameView extends BetterSurfaceView {
 
     public void playAI() {
         if (!state.hasVictory()) {
-            ai = new AI();
+            ai = new AI(4, 9);
             aiThread = new Thread() {
                 @Override
                 public void run() {
