@@ -10,12 +10,26 @@
     <string name="size_8x8">8x8</string>
     <string name="size_10x10">10x10</string>
     <string name="fill_corner_cell">Fill corner cells</string>
-    <string name="back">Back</string>
     <string name="rules">Rules</string>
     <string name="undo">Undo</string>
     <string name="next">Next :</string>
     <string name="next_ai">Next (AI) :</string>
     <string name="victory">Victorious :</string>
-    
+    <string name="see_rules">See rules</string>
+    <string name="settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
 
+    <string name="pref_ai">AI</string>
+    <string name="pref_ai_level">Level</string>
+    <string name="pref_ai_level_easy">Easy</string>
+    <string name="pref_ai_level_hard">Hard</string>
+    <string name="pref_ai_random">Random</string>
+    
+    <string name="rules_part1">In order to win, a player must align 4 discs of his own color vertically, horizontally, or diagonally.</string>
+    <string name="rules_part2">Like in the traditionnal Connect-Four, a player can put a disc in a cell if there is a straight line, from this cell to the bottom border, containing no empty cell.</string>
+    <string name="rules_part3">But unlike the traditionnal game, a disc can also be put in a cell if a straight line without empty cell goes from it to any other border, be it the top, left or right one.</string>
+    <string name="rules_part4">The effect is that of a 4-sided gravity.</string>
+    <string name="rules_part5">The board size can be either 8x8 or 10x10. In order to bring another twist, four cells, near the corners, can be blocked to offer new stragegies.</string>
 </resources>

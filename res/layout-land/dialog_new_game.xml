@@ -8,21 +8,23 @@
         android:id="@+id/dialog_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal|center_vertical" >
+        android:baselineAligned="false"
+        android:gravity="center_horizontal|center_vertical"
+        android:paddingBottom="20dp"
+        android:paddingTop="15dp" >
 
         <LinearLayout
             android:id="@+id/LinearLayout1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_horizontal"
+            android:gravity="center_horizontal|center_vertical|top"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:text="@string/grid_size"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -59,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center_horizontal|center_vertical|top"
             android:orientation="vertical" >
 
             <TextView
@@ -82,8 +84,7 @@
                 android:id="@+id/button_confirm_new_game"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:text="@string/new_game"
                 android:textSize="25dp" />
 

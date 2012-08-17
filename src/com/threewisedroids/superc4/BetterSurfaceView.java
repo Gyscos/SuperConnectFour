@@ -12,7 +12,7 @@ public abstract class BetterSurfaceView extends SurfaceView implements
         SurfaceHolder.Callback {
 
     class DrawingThread extends Thread {
-        private final static long frameTime = 1000 / 60;
+        private final static long frameTime = 1000 / 30;
 
         @Override
         public void run() {

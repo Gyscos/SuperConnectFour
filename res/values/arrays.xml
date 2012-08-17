@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="ai_levels_names">
+        <item >Easy</item>
+        <item >Hard</item>
+    </string-array>
+    <string-array name="ai_levels_values">
+        <item >Easy</item>
+        <item >Hard</item>
+    </string-array>
+    
+</resources>

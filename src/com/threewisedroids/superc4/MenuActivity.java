@@ -4,11 +4,15 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.ToggleButton;
 
+@SuppressWarnings("deprecation")
 public class MenuActivity extends Activity {
 
     Dialog dialog;
@@ -77,6 +81,39 @@ public class MenuActivity extends Activity {
     @Override
     @Deprecated
     protected Dialog onCreateDialog(final int id) {
-        return makeNewGameDialog();
+        switch (id) {
+            case 0:
+                return makeNewGameDialog();
+            case 1:
+                Dialog dialog = new Dialog(this);
+                dialog.setContentView(R.layout.dialog_rules);
+                dialog.setTitle(R.string.rules);
+                return dialog;
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.game_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_see_rules:
+                // Show Rules Dialog
+                showDialog(1);
+                return true;
+            case R.id.menu_settings:
+                // Start Setting Activity
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+        }
+        return false;
     }
 }

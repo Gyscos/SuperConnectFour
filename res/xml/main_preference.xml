@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:key="pref_key_ai"
+        android:title="@string/pref_ai" >
+        <ListPreference
+            android:entries="@array/ai_levels_names"
+            android:entryValues="@array/ai_levels_names"
+            android:key="pref_key_ai_level"
+            android:defaultValue="@string/pref_ai_level_easy"
+            android:title="@string/pref_ai_level" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_key_ai_random"
+            android:title="@string/pref_ai_random" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
