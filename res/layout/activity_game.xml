@@ -23,6 +23,7 @@
             android:layout_marginLeft="0dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
+            android:textSize="@dimen/text_size_small"
             android:text="@string/new_game" />
 
         <Button
@@ -31,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="0dp"
+            android:textSize="@dimen/text_size_small"
             android:layout_weight="1"
             android:text="@string/undo" />
     </LinearLayout>
@@ -46,7 +48,7 @@
         android:drawableRight="@drawable/blue_disc"
         android:gravity="center_vertical"
         android:text="@string/next"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/text_size_medium"
         android:textStyle="italic" >
 
     </TextView>

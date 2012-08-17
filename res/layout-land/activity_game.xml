@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
             android:layout_marginLeft="0dp"
+            android:textSize="@dimen/text_size_small"
             android:text="@string/new_game" />
         
         <TextView
@@ -39,6 +40,7 @@
             android:gravity="center_vertical"
             android:text="@string/victory"
             android:visibility="invisible"
+            android:textSize="@dimen/text_size_medium"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="italic" />
         
@@ -49,6 +51,7 @@
             android:drawablePadding="15dp"
             android:drawableRight="@drawable/blue_disc"
             android:gravity="center_vertical"
+            android:textSize="@dimen/text_size_medium"
             android:text="@string/next"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textStyle="italic" />
@@ -58,6 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="0dp"
+            android:textSize="@dimen/text_size_small"
             android:layout_marginTop="15dp"
             android:text="@string/undo" />
 

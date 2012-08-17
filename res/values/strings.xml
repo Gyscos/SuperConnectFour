@@ -21,6 +21,9 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_settings">Settings</string>
 
+    <string name="good">Good</string>
+    <string name="bad">Bad</string>
+    
     <string name="pref_ai">AI</string>
     <string name="pref_ai_level">Level</string>
     <string name="pref_ai_level_easy">Easy</string>

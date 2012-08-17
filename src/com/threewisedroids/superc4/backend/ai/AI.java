@@ -2,6 +2,7 @@ package com.threewisedroids.superc4.backend.ai;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import android.graphics.Point;
 
@@ -9,20 +10,47 @@ import com.threewisedroids.superc4.backend.GameState;
 
 public class AI
 {
+    public static class ArrayHolder {
+        public ArrayList<Integer> value = new ArrayList<Integer>();
+    }
+
+    public static class PointArrayHolder {
+        public ArrayList<Point> value = new ArrayList<Point>();
+    }
+
     boolean                      running;
 
     int                          maxDepth;
     int                          maxWidth;
 
+    int                          cores;
+
+    int[][]                      bestIds;
+    int[][]                      bestValues;
+
+    PointArrayHolder[]           results;
+    ArrayHolder[]                evaluations;
+
+    Point[][]                    pointPool;
+
+    boolean                      random;
+
+    int                          gridsize;
+
     private static final boolean debug = false;
 
-    public AI(int maxDepth, int maxWidth) {
+    public AI(int maxDepth, int maxWidth, int cores, boolean random) {
         this.maxDepth = maxDepth;
         this.maxWidth = maxWidth;
+
+        this.cores = cores;
+        this.random = random;
+
     }
 
-    List<Integer> evaluateMoves(GameState state, List<Point> moves) {
-        ArrayList<Integer> result = new ArrayList<Integer>();
+    List<Integer> evaluateMoves(GameState state, List<Point> moves, int depth) {
+        ArrayList<Integer> result = evaluations[depth].value;
+        result.clear();
         for (Point p : moves)
             result.add(state.evaluate(p.x, p.y));
         return result;
@@ -39,24 +67,22 @@ public class AI
         return minId;
     }
 
-    int[] getBest(List<Integer> list, int n) {
-        int[] bestIds = new int[n];
-        int[] bestValues = new int[n];
-
+    int[] getBest(List<Integer> list, int depth) {
         for (int i = 0; i < list.size(); i++) {
-            int minId = findMin(bestValues);
-            if (list.get(i) > bestValues[minId]) {
-                bestValues[minId] = list.get(i);
-                bestIds[minId] = i;
+            int minId = findMin(bestValues[depth]);
+            if (list.get(i) > bestValues[depth][minId]) {
+                bestValues[depth][minId] = list.get(i);
+                bestIds[depth][minId] = i;
             }
         }
 
-        return bestIds;
+        return bestIds[depth];
     }
 
-    List<Point> getLegalMoves(GameState state) {
-        ArrayList<Point> result = new ArrayList<Point>();
-        int gridsize = state.getGridSize();
+    List<Point> getLegalMoves(GameState state, int depth) {
+        ArrayList<Point> result = results[depth].value;
+
+        int index = 0;
 
         // Check all 4 borders
         for (int i = 0; i < gridsize; i++) {
@@ -68,22 +94,26 @@ public class AI
                     - state.getFirstFreeCell(max, i, GameState.DIR_LEFT);
 
             if (bot != -1 && bot < gridsize) {
-                Point pBot = new Point(i, bot);
+                Point pBot = pointPool[depth][index++];
+                pBot.set(i, bot);
                 if (!result.contains(pBot))
                     result.add(pBot);
             }
             if (top != -1 && top < gridsize) {
-                Point pTop = new Point(i, top);
+                Point pTop = pointPool[depth][index++];
+                pTop.set(i, top);
                 if (!result.contains(pTop))
                     result.add(pTop);
             }
             if (left != -1 && left < gridsize) {
-                Point pLeft = new Point(left, i);
+                Point pLeft = pointPool[depth][index++];
+                pLeft.set(left, i);
                 if (!result.contains(pLeft))
                     result.add(pLeft);
             }
             if (right != -1 && right < gridsize) {
-                Point pRight = new Point(right, i);
+                Point pRight = pointPool[depth][index++];
+                pRight.set(right, i);
                 if (!result.contains(pRight))
                     result.add(pRight);
             }
@@ -95,6 +125,30 @@ public class AI
     public int play(GameState state) {
         running = true;
         System.out.println("===== START =====");
+
+        // Init everything
+
+        gridsize = state.getGridSize();
+
+        pointPool = new Point[maxDepth][4 * gridsize];
+
+        results = new PointArrayHolder[maxDepth];
+        evaluations = new ArrayHolder[maxDepth];
+
+        bestIds = new int[maxDepth][];
+        bestValues = new int[maxDepth][];
+
+        for (int i = 0; i < maxDepth; i++) {
+            int width = maxWidth - 2 * i;
+            bestIds[i] = new int[width];
+            bestValues[i] = new int[width];
+
+            results[i] = new PointArrayHolder();
+            evaluations[i] = new ArrayHolder();
+
+            for (int j = 0; j < 4 * gridsize; j++)
+                pointPool[i][j] = new Point();
+        }
         return play(state, 0);
     }
 
@@ -103,27 +157,29 @@ public class AI
             return 0;
 
         // Check for termination
-        if (depth > maxDepth)
+        if (depth >= maxDepth)
             return 0;
 
         if (state.hasVictory())
             return -1000;
 
         // Compute possible moves
-        List<Point> moves = getLegalMoves(state);
+        List<Point> moves = getLegalMoves(state, depth);
 
         // Evaluate them
-        List<Integer> values = evaluateMoves(state, moves);
+        List<Integer> values = evaluateMoves(state, moves, depth);
 
-        if (depth == 0) {
-            for (int i = 0; i < values.size(); i++)
-                System.out.println("[" + moves.get(i).x + ":" + moves.get(i).y
-                        + "] : " + values.get(i));
-        }
+        if (debug)
+            if (depth == 0) {
+                for (int i = 0; i < values.size(); i++)
+                    System.out.println("[" + moves.get(i).x + ":"
+                            + moves.get(i).y
+                            + "] : " + values.get(i));
+            }
 
         // Sample the K best
-        int width = maxWidth - depth * 2;
-        int[] bests = getBest(values, width);
+        int[] bests = random ? sampleBest(values, depth) : getBest(values,
+                depth);
 
         if (debug) {
             for (int id : bests)
@@ -153,8 +209,9 @@ public class AI
             int nextScore = play(next, depth + 1);
             int score = values.get(id) - nextScore;
 
-            System.out.print("(" + depth + ")");
             if (debug) {
+                System.out.print("(" + depth + ")");
+
                 for (int i = 0; i < depth; i++)
                     System.out.print("  ");
                 System.out
@@ -180,6 +237,44 @@ public class AI
         }
 
         return bestScore;
+    }
+
+    int[] sampleBest(List<Integer> list, int depth) {
+        int[] result = bestIds[depth];
+
+        // First, find the total weight
+        int s = 0;
+        for (int value : list)
+            s += value;
+
+        Random rnd = new Random();
+
+        for (int i = 0; i < result.length; i++) {
+            int r = rnd.nextInt(s);
+
+            int index = 0;
+            for (int j = 0; j < list.size(); j++) {
+                boolean ok = true;
+
+                for (int k = 0; k < i; k++)
+                    if (result[k] == j)
+                        ok = false;
+
+                if (!ok)
+                    continue;
+
+                r -= list.get(j);
+                if (r < 0) {
+                    index = j;
+                    break;
+                }
+            }
+
+            s -= list.get(index);
+            result[i] = index;
+        }
+
+        return result;
     }
 
     public void stop() {

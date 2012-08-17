@@ -3,6 +3,7 @@ package com.threewisedroids.superc4;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,7 +11,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.RectF;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -107,9 +110,9 @@ public class GameView extends BetterSurfaceView {
         List<Point> winningCells = state.getWinningCells();
 
         if (state.getNextPlayer() == 1)
-            paint.setColor(Color.rgb(255, 180, 180));
+            paint.setColor(Color.rgb(255, 200, 200));
         else
-            paint.setColor(Color.rgb(180, 180, 255));
+            paint.setColor(Color.rgb(200, 200, 255));
         for (Point p : winningCells) {
             c.drawRect(getXLine(p.x), getYLine(p.y), getXLine(p.x + 1),
                     getYLine(p.y + 1), paint);
@@ -127,6 +130,8 @@ public class GameView extends BetterSurfaceView {
 
     @Override
     public void onDraw(Canvas c) {
+        c.drawColor(Color.TRANSPARENT, Mode.CLEAR);
+
         if (state == null)
             return;
 
@@ -208,7 +213,23 @@ public class GameView extends BetterSurfaceView {
 
     public void playAI() {
         if (!state.hasVictory()) {
-            ai = new AI(4, 9);
+            int cores = Runtime.getRuntime().availableProcessors();
+            SharedPreferences pref = PreferenceManager
+                    .getDefaultSharedPreferences(getContext());
+
+            boolean random = pref.getBoolean("pref_key_ai_random", false);
+            String difficulty = pref.getString("pref_key_ai_level", "Easy");
+            int width, depth;
+            if (difficulty.equals("Easy")) {
+                depth = 4;
+                width = 7;
+            } else {
+                depth = 5;
+                width = 9;
+            }
+
+            ai = new AI(depth, width, cores, random);
+
             aiThread = new Thread() {
                 @Override
                 public void run() {
