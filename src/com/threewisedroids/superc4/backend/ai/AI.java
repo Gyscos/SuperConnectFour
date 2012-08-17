@@ -18,26 +18,26 @@ public class AI
         public ArrayList<Point> value = new ArrayList<Point>();
     }
 
-    boolean                      running;
+    boolean            running;
 
-    int                          maxDepth;
-    int                          maxWidth;
+    int                maxDepth;
+    int                maxWidth;
 
-    int                          cores;
+    int                cores;
 
-    int[][]                      bestIds;
-    int[][]                      bestValues;
+    int[][]            bestIds;
+    int[][]            bestValues;
 
-    PointArrayHolder[]           results;
-    ArrayHolder[]                evaluations;
+    PointArrayHolder[] results;
+    ArrayHolder[]      evaluations;
 
-    Point[][]                    pointPool;
+    Point[][]          pointPool;
 
-    boolean                      random;
+    boolean            random;
 
-    int                          gridsize;
+    int                gridsize;
 
-    private static final boolean debug = false;
+    private static int debug = 0;
 
     public AI(int maxDepth, int maxWidth, int cores, boolean random) {
         this.maxDepth = maxDepth;
@@ -169,7 +169,7 @@ public class AI
         // Evaluate them
         List<Integer> values = evaluateMoves(state, moves, depth);
 
-        if (debug)
+        if (debug > 0)
             if (depth == 0) {
                 for (int i = 0; i < values.size(); i++)
                     System.out.println("[" + moves.get(i).x + ":"
@@ -181,7 +181,7 @@ public class AI
         int[] bests = random ? sampleBest(values, depth) : getBest(values,
                 depth);
 
-        if (debug) {
+        if (debug > depth) {
             for (int id : bests)
                 System.out.print("[" + moves.get(id).x + ":" + moves.get(id).y
                         + "] ; ");
@@ -196,7 +196,7 @@ public class AI
 
             GameState next = state.clone();
 
-            if (debug)
+            if (debug > 1)
                 if (depth != maxDepth) {
                     System.out.print("(" + depth + ")");
                     for (int i = 0; i < depth; i++)
@@ -209,7 +209,7 @@ public class AI
             int nextScore = play(next, depth + 1);
             int score = values.get(id) - nextScore;
 
-            if (debug) {
+            if (debug > 1) {
                 System.out.print("(" + depth + ")");
 
                 for (int i = 0; i < depth; i++)
@@ -245,7 +245,7 @@ public class AI
         // First, find the total weight
         int s = 0;
         for (int value : list)
-            s += value;
+            s += value * value;
 
         Random rnd = new Random();
 
@@ -263,14 +263,14 @@ public class AI
                 if (!ok)
                     continue;
 
-                r -= list.get(j);
+                r -= list.get(j) * list.get(j);
                 if (r < 0) {
                     index = j;
                     break;
                 }
             }
 
-            s -= list.get(index);
+            s -= list.get(index) * list.get(index);
             result[i] = index;
         }
 
