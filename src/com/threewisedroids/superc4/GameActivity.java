@@ -17,9 +17,11 @@ import com.threewisedroids.superc4.backend.GameState;
 @SuppressWarnings("deprecation")
 public class GameActivity extends Activity {
 
-    GameState state;
-    boolean   useAI;
-    boolean   fillCorners;
+    static final boolean hasActionBar = android.os.Build.VERSION.SDK_INT >= 11;
+
+    GameState            state;
+    boolean              useAI;
+    boolean              fillCorners;
 
     @SuppressLint("NewApi")
     @Override
@@ -27,7 +29,8 @@ public class GameActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_game);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (hasActionBar)
+            getActionBar().setDisplayHomeAsUpEnabled(true);
 
         final int gridSize = getIntent().getIntExtra("gridSize", 8);
         useAI = getIntent().getBooleanExtra("useAI", true);
